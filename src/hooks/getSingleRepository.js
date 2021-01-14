@@ -16,7 +16,6 @@ const getSingleRepository = (variables) => {
         if (!canFetchMore) {
           return;
         }
-        console.log('running fetch');
         fetchMore({
           query: SINGLE_REPOSITORY,
           variables: {
@@ -35,7 +34,6 @@ const getSingleRepository = (variables) => {
                 ],
               },
             };
-            console.log(nextResult.reviews);
             return nextResult;
           },
         });

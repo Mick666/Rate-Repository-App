@@ -3,7 +3,7 @@ import { AUTHORIZED_USER } from '../graphql/queries';
 
 const getUserReviews = (variables) => {
 
-    const { data, loading, fetchMore, ...result } = useQuery(AUTHORIZED_USER, {
+    const { data, loading, fetchMore, refetch,...result } = useQuery(AUTHORIZED_USER, {
         fetchPolicy: 'network-and-cache',
         variables
     });
@@ -43,6 +43,7 @@ const getUserReviews = (variables) => {
         fetchMore: handleFetchMore,
         loading,
         ...result,
+        refetch
       };
 };
 

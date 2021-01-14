@@ -38,6 +38,9 @@ export const AUTHORIZED_USER = gql `
                 id
                 username
               }
+              repository {
+                url
+              }
             }
             cursor
           }

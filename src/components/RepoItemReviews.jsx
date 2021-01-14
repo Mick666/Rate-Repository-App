@@ -4,6 +4,7 @@ import { FlatList, View, StyleSheet, Dimensions } from 'react-native';
 import Text from './Text';
 import getSingleRepository from '../hooks/getSingleRepository';
 import getUserReviews from '../hooks/getUserReviews';
+import ReviewActionButtons from './ReviewActionButtons';
 
 const win = Dimensions.get('window');
 const reviewWidth = 46;
@@ -38,9 +39,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
     },
-    flatListParent: {
-        marginBottom: win.height - 150
-    },
     reviewNumber: {
         color: '#0366d6',
     }
@@ -53,7 +51,7 @@ const parseDate = (date) => {
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepoItemReviewContainer = ({ review }) => {
+const RepoItemReviewContainer = ({ review, getAllUserReviews, refetch }) => {
     return (
         <View style={{ flexGrow: 1 }}>
             <View style={styles.reviewHeader}>
@@ -68,30 +66,38 @@ const RepoItemReviewContainer = ({ review }) => {
                     </View>
                 </View>
             </View>
+            {getAllUserReviews ?
+                <ReviewActionButtons
+                    url={review.repository.url}
+                    id={review.id}
+                    refetch={refetch}
+                />
+                :
+                null}
         </View>
     );
 };
 
 const RepoItemReviews = ({ id, getAllUserReviews }) => {
 
-    const { reviews, fetchMore } = getAllUserReviews ? getUserReviews({ first: 3, includeReviews: true }) : getSingleRepository({ id, first: 3 });
+    const { reviews, fetchMore, refetch } = getAllUserReviews ? getUserReviews({ first: 3, includeReviews: true }) : getSingleRepository({ id, first: 3 });
 
     const reviewNodes = reviews
         ? reviews.edges.map(edge => edge.node)
         : [];
 
     const renderItem = ({ item }) => (
-        <RepoItemReviewContainer review={item} />
+        <RepoItemReviewContainer review={item} getAllUserReviews={getAllUserReviews} refetch={refetch} />
     );
 
 
     const onEndReach = () => {
         console.log('end reached');
         fetchMore();
-      };
+    };
 
     return (
-        <View style={styles.flatListParent}>
+        <View>
             {getAllUserReviews ? null : <View style={styles.separator} />}
             <FlatList
                 data={reviewNodes}
